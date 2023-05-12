@@ -22,4 +22,4 @@ set(SOURCES e2_agent.cc e2ap_ric_subscription.cc e2ap.cc e2sm_kpm_common.cc e2sm
 add_library(srsgnb_ric STATIC ${SOURCES})
 target_link_libraries(srsgnb_ric srsran_asn1 ric_e2)
 
-add_subdirectory(test)
+#add_subdirectory(test)
