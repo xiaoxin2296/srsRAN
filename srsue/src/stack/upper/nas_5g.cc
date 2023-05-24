@@ -1037,6 +1037,7 @@ int nas_5g::handle_n1_sm_information(std::vector<uint8_t> payload_container_cont
   switch (nas_msg.hdr.message_type) {
     case msg_opts::options::pdu_session_establishment_accept:
       pdu_session_establishment_proc.trigger(nas_msg.pdu_session_establishment_accept());
+      trigger_pdu_session_est();
       break;
     case msg_opts::options::pdu_session_establishment_reject:
       pdu_session_establishment_proc.trigger(nas_msg.pdu_session_establishment_reject());
@@ -1266,6 +1267,7 @@ int nas_5g::init_pdu_sessions(std::vector<pdu_session_cfg_t> pdu_session_cfgs)
     pdu_sessions[i].configured      = true;
     pdu_sessions[i].pdu_session_id  = i + 1;
     pdu_sessions[i].pdu_session_cfg = pdu_session_cfg;
+    i++;
   }
   return SRSRAN_SUCCESS;
 }
@@ -1273,7 +1275,7 @@ int nas_5g::init_pdu_sessions(std::vector<pdu_session_cfg_t> pdu_session_cfgs)
 uint32_t nas_5g::num_of_est_pdu_sessions()
 {
   uint32_t i = 0;
-  for (auto pdu_session : pdu_sessions) {
+  for (auto &pdu_session : pdu_sessions) {
     if (pdu_session.established == true) {
       i++;
     }
@@ -1283,7 +1285,7 @@ uint32_t nas_5g::num_of_est_pdu_sessions()
 
 int nas_5g::configure_pdu_session(uint16_t pdu_session_id)
 {
-  for (auto pdu_session : pdu_sessions) {
+  for (auto &pdu_session : pdu_sessions) {
     if (pdu_session.pdu_session_id == pdu_session_id) {
       pdu_session.established = true;
     }
@@ -1293,7 +1295,7 @@ int nas_5g::configure_pdu_session(uint16_t pdu_session_id)
 
 bool nas_5g::unestablished_pdu_sessions()
 {
-  for (auto pdu_session : pdu_sessions) {
+  for (auto &pdu_session : pdu_sessions) {
     if (pdu_session.configured == true && pdu_session.established == false) {
       return true;
     }
@@ -1303,7 +1305,7 @@ bool nas_5g::unestablished_pdu_sessions()
 
 int nas_5g::get_unestablished_pdu_session(uint16_t& pdu_session_id, pdu_session_cfg_t& pdu_session_cfg)
 {
-  for (auto pdu_session : pdu_sessions) {
+  for (auto &pdu_session : pdu_sessions) {
     if (pdu_session.configured == true && pdu_session.established == false) {
       pdu_session_id  = pdu_session.pdu_session_id;
       pdu_session_cfg = pdu_session.pdu_session_cfg;
@@ -1377,6 +1379,7 @@ int nas_5g::add_pdu_session(uint16_t                      pdu_session_id,
                     pdu_address.ipv6.data()[6],
                     pdu_address.ipv6.data()[7]);
   }
+  configure_pdu_session(pdu_session_id);
 
   return SRSRAN_SUCCESS;
 }

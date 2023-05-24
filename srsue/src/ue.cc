@@ -293,6 +293,10 @@ int ue::parse_args(const all_args_t& args_)
     args.stack.nas_5g.ia5g = args.stack.nas.eia;
     args.stack.nas_5g.ea5g = args.stack.nas.eea;
     args.stack.nas_5g.pdu_session_cfgs.push_back({args.stack.nas.apn_name});
+    if(!args.stack.nas.apn1_name.empty())
+    {
+      args.stack.nas_5g.pdu_session_cfgs.push_back({args.stack.nas.apn1_name});
+    }
   }
 
   // Validate the CFR args
